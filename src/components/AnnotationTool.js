@@ -10,7 +10,7 @@ const AnnotationTool = () => {
   const [annotation, setAnnotation] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [submitted, setSubmitted] = useState(false); 
+  const [successMessage, setSuccessMessage] = useState(""); // New state for submission message
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -54,9 +54,8 @@ const AnnotationTool = () => {
         await saveAnnotation(payload);
       }
 
-      // Show the submitted message
-      setSubmitted(true);
-      setTimeout(() => setSubmitted(false), 3000); // Hide message after 3 seconds
+      setSuccessMessage("All annotations saved successfully! ✅"); // Update success message
+      setTimeout(() => setSuccessMessage(""), 5000); // Clear the message after 5 seconds
     } catch (error) {
       console.error("Error saving annotation:", error);
       if (error.response && error.response.data) {
@@ -82,6 +81,9 @@ const AnnotationTool = () => {
       ...prev,
       [currentImage.id]: [...(prev[currentImage.id] || []), newAnnotationData],
     }));
+
+    setSuccessMessage("Annotation submitted successfully! 🎉"); // Set success message
+    setTimeout(() => setSuccessMessage(""), 5000); // Clear the message after 5 seconds
   };
 
   const handleNextImage = () => {
@@ -100,12 +102,8 @@ const AnnotationTool = () => {
 
       {error && <p className="error-message">{error}</p>}
 
-      {/* Submitted message */}
-      {submitted && (
-        <div className="submitted-message">
-          🎉 Annotations submitted successfully!
-        </div>
-      )}
+      {/* Submission Message */}
+      {successMessage && <p className="success-message">{successMessage}</p>}
 
       <div className="annotation-container">
         {currentImage && (
@@ -132,9 +130,7 @@ const AnnotationTool = () => {
         >
           Next
         </button>
-        <button onClick={handleSaveAnnotation} className="submit-button">
-          Save Annotations
-        </button>
+        <button onClick={handleSaveAnnotation}>Save Annotations</button>
       </div>
     </div>
   );
