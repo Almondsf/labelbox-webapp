@@ -10,7 +10,7 @@ const AnnotationTool = () => {
   const [annotation, setAnnotation] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(""); // New state for submission message
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -54,8 +54,8 @@ const AnnotationTool = () => {
         await saveAnnotation(payload);
       }
 
-      setSuccessMessage("All annotations saved successfully! ✅"); // Update success message
-      setTimeout(() => setSuccessMessage(""), 5000); // Clear the message after 5 seconds
+      setSuccessMessage("All annotations saved successfully! ✅");
+      setTimeout(() => setSuccessMessage(""), 5000);
     } catch (error) {
       console.error("Error saving annotation:", error);
       if (error.response && error.response.data) {
@@ -82,8 +82,8 @@ const AnnotationTool = () => {
       [currentImage.id]: [...(prev[currentImage.id] || []), newAnnotationData],
     }));
 
-    setSuccessMessage("Annotation submitted successfully! 🎉"); // Set success message
-    setTimeout(() => setSuccessMessage(""), 5000); // Clear the message after 5 seconds
+    setSuccessMessage("Annotation submitted successfully! 🎉");
+    setTimeout(() => setSuccessMessage(""), 5000);
   };
 
   const handleNextImage = () => {
