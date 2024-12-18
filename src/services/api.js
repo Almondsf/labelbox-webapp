@@ -23,12 +23,12 @@ export const getImages = async () => {
 export const saveAnnotation = async ({ image, label, x, y, width, height }) => {
   try {
     const response = await api.post("/api/annotations/", {
-      image, // Ensure this matches the image ID from backend
-      label, // Label, e.g., "Dog"
-      x: parseFloat(x), // Ensure it's a number
-      y: parseFloat(y), // Ensure it's a number
-      width: parseFloat(width), // Ensure it's a number
-      height: parseFloat(height), // Ensure it's a number
+      image,
+      label,
+      x: parseFloat(x),
+      y: parseFloat(y),
+      width: parseFloat(width),
+      height: parseFloat(height),
     });
     return response.data;
   } catch (error) {

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Annotation from "react-image-annotation";
 import { getImages, saveAnnotation } from "../services/api";
+import "./AnnotationTool.css"; // Import the CSS styles
 
 const AnnotationTool = () => {
-  const [images, setImages] = useState([]); // Stores all fetched images
-  const [imageIndex, setImageIndex] = useState(0); // Tracks the current image index
-  const [annotations, setAnnotations] = useState({}); // Store annotations for each image (keyed by image ID)
+  const [images, setImages] = useState([]);
+  const [imageIndex, setImageIndex] = useState(0);
+  const [annotations, setAnnotations] = useState({});
   const [annotation, setAnnotation] = useState({});
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // To display error messages
+  const [error, setError] = useState(null);
+  const [submitted, setSubmitted] = useState(false); 
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -48,15 +50,17 @@ const AnnotationTool = () => {
           height: parseFloat(ann.geometry.height),
         };
 
-        console.log("Sending payload:", payload); // Debug: See exactly what's sent
+        console.log("Sending payload:", payload);
         await saveAnnotation(payload);
       }
 
-      alert("All annotations saved successfully");
+      // Show the submitted message
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 3000); // Hide message after 3 seconds
     } catch (error) {
       console.error("Error saving annotation:", error);
       if (error.response && error.response.data) {
-        console.error("Server Response:", error.response.data); // Show backend error
+        console.error("Server Response:", error.response.data);
       }
       alert("Failed to save annotations. Please try again.");
     }
@@ -91,31 +95,47 @@ const AnnotationTool = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
+    <div className="annotation-tool">
       <h2>Image Annotation Tool</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {currentImage && (
-        <Annotation
-          src={currentImage.image_url}
-          alt="Annotate this image"
-          annotations={annotations[currentImage.id] || []}
-          value={annotation}
-          type={annotation.type}
-          onChange={onChange}
-          onSubmit={onSubmit}
-          allowTouch
-        />
+
+      {error && <p className="error-message">{error}</p>}
+
+      {/* Submitted message */}
+      {submitted && (
+        <div className="submitted-message">
+          🎉 Annotations submitted successfully!
+        </div>
       )}
-      <button onClick={handlePreviousImage} disabled={imageIndex === 0}>
-        Previous
-      </button>
-      <button
-        onClick={handleNextImage}
-        disabled={imageIndex === images.length - 1}
-      >
-        Next
-      </button>
-      <button onClick={handleSaveAnnotation}>Save Annotations</button>
+
+      <div className="annotation-container">
+        {currentImage && (
+          <Annotation
+            src={currentImage.image_url}
+            alt="Annotate this image"
+            annotations={annotations[currentImage.id] || []}
+            value={annotation}
+            type={annotation.type}
+            onChange={onChange}
+            onSubmit={onSubmit}
+            allowTouch
+          />
+        )}
+      </div>
+
+      <div className="button-container">
+        <button onClick={handlePreviousImage} disabled={imageIndex === 0}>
+          Previous
+        </button>
+        <button
+          onClick={handleNextImage}
+          disabled={imageIndex === images.length - 1}
+        >
+          Next
+        </button>
+        <button onClick={handleSaveAnnotation} className="submit-button">
+          Save Annotations
+        </button>
+      </div>
     </div>
   );
 };
